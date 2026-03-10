@@ -3,8 +3,7 @@
 A modern **glassmorphism weather web app** that shows real-time weather data with a beautiful animated UI.
 
 ## 🔗 Live Demo
-
-[![Netlify Status](https://api.netlify.com/api/v1/badges/a69a77e3-3404-41cf-aefc-d6ff4b49dbc7/deploy-status)](https://app.netlify.com/projects/weatherglass/deploys)
+[Netlify](https://weatherglass.netlify.app)
 
 ## 📸 Preview
 
