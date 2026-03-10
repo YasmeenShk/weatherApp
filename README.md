@@ -4,7 +4,7 @@ A modern **glassmorphism weather web app** that shows real-time weather data wit
 
 ## 🔗 Live Demo
 
-👉 https://YOUR-LIVE-LINK
+👉 (https://yasmeenshk.github.io/weatherApp/)
 
 ## 📸 Preview
 
