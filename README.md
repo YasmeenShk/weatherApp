@@ -4,7 +4,7 @@ A modern **glassmorphism weather web app** that shows real-time weather data wit
 
 ## 🔗 Live Demo
 
-👉 (https://yasmeenshk.github.io/weatherApp/)
+[![Netlify Status](https://api.netlify.com/api/v1/badges/a69a77e3-3404-41cf-aefc-d6ff4b49dbc7/deploy-status)](https://app.netlify.com/projects/weatherglass/deploys)
 
 ## 📸 Preview
 
