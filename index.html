@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>WeatherGlass</title>
+  
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet"/>
+  <link rel="stylesheet" href="dist/output.css" />
+</head>
+<body>
+
+  <!-- Background -->
+  <div class="bg-scene">
+    <div class="orb orb-1"></div>
+    <div class="orb orb-2"></div>
+    <div class="orb orb-3"></div>
+    <div class="stars" id="stars"></div>
+  </div>
+
+  <!-- App Wrapper -->
+  <div class="relative z-10 min-h-screen flex flex-col items-center justify-start px-4 py-10">
+
+    <!-- Header -->
+    <div class="w-full max-w-2xl mb-8 text-center fade-in">
+      <p class="text-xs font-semibold tracking-widest text-blue-300 uppercase mb-1 opacity-70">Real-time</p>
+      <h1 class="text-3xl font-bold text-white">WeatherGlass</h1>
+    </div>
+
+    <!-- Search Bar -->
+    <div class="w-full max-w-2xl mb-6 fade-in">
+      <div class="glass rounded-2xl p-3 flex gap-3 items-center">
+        <svg class="ml-2 w-5 h-5 text-blue-300 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+            d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"/>
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+            d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"/>
+        </svg>
+        <input
+          id="cityInput"
+          type="text"
+          placeholder="Search city or location…"
+          class="search-input flex-1 rounded-xl px-3 py-2 text-base"
+          autocomplete="off"
+        />
+        <button onclick="fetchWeather()" class="search-btn text-white rounded-xl px-5 py-2 text-sm font-semibold">
+          Search
+        </button>
+      </div>
+      <!-- Quick Cities -->
+      <div class="flex gap-2 mt-2 flex-wrap px-1" id="quickCities"></div>
+    </div>
+
+    <!-- Loading -->
+    <div id="loadingEl" class="hidden flex-col items-center gap-3 py-12">
+      <div class="spinner"></div>
+      <p class="text-sm" style="color: rgba(255,255,255,0.5)">Fetching weather…</p>
+    </div>
+
+    <!-- Error -->
+    <div id="errorEl" class="hidden w-full max-w-2xl glass rounded-2xl p-5 text-center text-sm" style="color: #fca5a5;">
+      City not found. Please try another name.
+    </div>
+
+    <!-- Weather Card -->
+    <div id="weatherCard" class="hidden w-full max-w-2xl fade-in">
+
+      <!-- Main Info -->
+      <div class="glass-strong rounded-3xl p-6 mb-4">
+        <div class="flex flex-col sm:flex-row items-center sm:items-start justify-between gap-4">
+
+          <!-- Left: Temp -->
+          <div class="text-center sm:text-left">
+            <div class="flex items-center gap-2 justify-center sm:justify-start mb-1">
+              <svg class="w-4 h-4 text-blue-300" fill="currentColor" viewBox="0 0 20 20">
+                <path fill-rule="evenodd"
+                  d="M5.05 4.05a7 7 0 119.9 9.9L10 18.9l-4.95-4.95a7 7 0 010-9.9zM10 11a2 2 0 100-4 2 2 0 000 4z"
+                  clip-rule="evenodd"/>
+              </svg>
+              <span id="cityName" class="text-blue-200 font-semibold text-sm tracking-wide"></span>
+            </div>
+            <div class="temp-display" id="tempDisplay">--°</div>
+            <p id="conditionText" class="text-lg mt-1 capitalize" style="color: rgba(255,255,255,0.7)"></p>
+            <p id="feelsLike" class="text-sm mt-1" style="color: rgba(255,255,255,0.4)"></p>
+          </div>
+
+          <!-- Right: Icon + Hi/Lo -->
+          <div class="text-center flex flex-col items-center gap-3">
+            <div class="icon-glow text-8xl" id="weatherIcon">🌤️</div>
+            <div class="flex gap-4 text-sm">
+              <span class="text-blue-300 font-semibold">H: <span id="tempHigh">--</span></span>
+              <span class="text-indigo-300 font-semibold">L: <span id="tempLow">--</span></span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Date & Time -->
+        <div class="mt-5 pt-4 flex flex-wrap gap-4 justify-between text-xs" style="border-top: 1px solid rgba(255,255,255,0.1); color: rgba(255,255,255,0.4);">
+          <span id="dateStr"></span>
+          <span id="localTime"></span>
+        </div>
+      </div>
+
+      <!-- Stats Grid -->
+      <div class="grid grid-cols-2 sm:grid-cols-4 gap-3 mb-4">
+
+        <div class="glass stat-card rounded-2xl p-4 flex flex-col gap-2">
+          <div class="flex items-center gap-2 text-blue-300">
+            <span class="text-xl">💧</span>
+            <span class="text-xs font-semibold uppercase tracking-wider opacity-70">Humidity</span>
+          </div>
+          <p class="text-2xl font-bold text-white" id="humidityVal">--%</p>
+          <p class="text-xs" style="color:rgba(255,255,255,0.4)" id="humidityDesc"></p>
+        </div>
+
+        <div class="glass stat-card rounded-2xl p-4 flex flex-col gap-2">
+          <div class="flex items-center gap-2 text-cyan-300">
+            <span class="text-xl">🌬️</span>
+            <span class="text-xs font-semibold uppercase tracking-wider opacity-70">Wind</span>
+          </div>
+          <p class="text-2xl font-bold text-white" id="windVal">--</p>
+          <p class="text-xs" style="color:rgba(255,255,255,0.4)" id="windDir"></p>
+        </div>
+
+        <div class="glass stat-card rounded-2xl p-4 flex flex-col gap-2">
+          <div class="flex items-center gap-2 text-emerald-300">
+            <span class="text-xl">👁️</span>
+            <span class="text-xs font-semibold uppercase tracking-wider opacity-70">Visibility</span>
+          </div>
+          <p class="text-2xl font-bold text-white" id="visibilityVal">--</p>
+          <p class="text-xs" style="color:rgba(255,255,255,0.4)" id="visibilityDesc"></p>
+        </div>
+
+        <div class="glass stat-card rounded-2xl p-4 flex flex-col gap-2">
+          <div class="flex items-center gap-2 text-purple-300">
+            <span class="text-xl">🧭</span>
+            <span class="text-xs font-semibold uppercase tracking-wider opacity-70">Pressure</span>
+          </div>
+          <p class="text-2xl font-bold text-white" id="pressureVal">--</p>
+          <p class="text-xs" style="color:rgba(255,255,255,0.4)" id="pressureDesc"></p>
+        </div>
+
+      </div>
+
+      <!-- UV Index -->
+      <div class="glass rounded-2xl p-5 mb-4">
+        <div class="flex items-center justify-between mb-3">
+          <div class="flex items-center gap-2">
+            <span class="text-lg">☀️</span>
+            <span class="text-xs font-semibold uppercase tracking-wider" style="color:rgba(254,240,138,0.7)">UV Index</span>
+          </div>
+          <span class="text-white font-bold text-lg" id="uvValue">--</span>
+        </div>
+        <div class="relative uv-bar-bg">
+          <div class="uv-indicator" id="uvIndicator" style="left: 0%"></div>
+        </div>
+        <div class="flex justify-between text-xs mt-2" style="color:rgba(255,255,255,0.3)">
+          <span>Low</span><span>Moderate</span><span>High</span><span>Very High</span><span>Extreme</span>
+        </div>
+      </div>
+
+      <!-- Sunrise / Sunset -->
+      <div class="glass rounded-2xl p-5 mb-4">
+        <div class="flex items-center gap-2 mb-4">
+          <span class="text-lg">🌅</span>
+          <span class="text-xs font-semibold uppercase tracking-wider" style="color:rgba(253,186,116,0.7)">Sun</span>
+        </div>
+        <div class="flex justify-around text-center">
+          <div>
+            <p class="text-2xl mb-1">🌄</p>
+            <p class="text-white font-bold text-lg" id="sunriseVal">--:--</p>
+            <p class="text-xs mt-1" style="color:rgba(255,255,255,0.4)">Sunrise</p>
+          </div>
+          <div class="flex items-center">
+            <div style="width:6rem;height:1px;background:linear-gradient(90deg,rgba(253,186,116,0.3),rgba(253,224,71,0.6),rgba(253,186,116,0.3))"></div>
+          </div>
+          <div>
+            <p class="text-2xl mb-1">🌇</p>
+            <p class="text-white font-bold text-lg" id="sunsetVal">--:--</p>
+            <p class="text-xs mt-1" style="color:rgba(255,255,255,0.4)">Sunset</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- 7-Day Forecast -->
+      <div class="glass rounded-2xl p-5">
+        <div class="flex items-center gap-2 mb-4">
+          <span class="text-lg">📅</span>
+          <span class="text-xs font-semibold uppercase tracking-wider" style="color:rgba(199,210,254,0.7)">7-Day Forecast</span>
+        </div>
+        <div class="forecast-scroll" id="forecastRow"></div>
+      </div>
+
+    </div>
+  </div>
+
+
+  <script src="src/script.js"></script>
+
+</body>
+</html>
