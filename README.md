@@ -1,6 +1,6 @@
 # WeatherGlass 🌤️
 
-A modern **glassmorphism weather web app** that shows real-time weather data with a beautiful animated UI.
+A modern **glassmorphism weather web app** that shows real-time weather
 
 ## 🔗 Live Demo
 [WEATHERAPP LIVE LINK](https://weatherglass.netlify.app)
