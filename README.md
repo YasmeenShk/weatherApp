@@ -3,7 +3,7 @@
 A modern **glassmorphism weather web app** that shows real-time weather data with a beautiful animated UI.
 
 ## 🔗 Live Demo
-[WeatherApp-Live-Link](https://react-todo-ys.vercel.app)
+[WeatherApp-Live-Link](https://weather-ys.vercel.app))
 
 ## 📸 Preview
 
